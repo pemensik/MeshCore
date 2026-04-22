@@ -14,6 +14,9 @@
 
 class T1000SensorManager: public SensorManager {
   bool gps_active = false;
+#ifdef PIN_BUZZER
+  bool buzzer_active = false;
+#endif
   LocationProvider * _nmea;
 
   void start_gps();

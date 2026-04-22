@@ -177,25 +177,46 @@ void T1000SensorManager::loop() {
   }
 }
 
-int T1000SensorManager::getNumSettings() const { return 1; }  // just one supported: "gps" (power switch)
+int T1000SensorManager::getNumSettings() const {
+#ifdef PIN_BUZZER
+  return 2;
+#else
+  return 1;
+#endif
+}  // just two supported: "gps" (power switch) and optionally "buzzer"
 
 const char* T1000SensorManager::getSettingName(int i) const {
-  return i == 0 ? "gps" : NULL;
+  switch (i) {
+    case 0: return "gps";
+#ifdef PIN_BUZZER
+    case 1: return "buzzer";
+#endif
+    default: return NULL;
+  };
 }
 const char* T1000SensorManager::getSettingValue(int i) const {
   if (i == 0) {
     return gps_active ? "1" : "0";
+#ifdef PIN_BUZZER
+  } else if (i == 1) {
+    return buzzer_active ? "1" : "0";
+#endif
   }
   return NULL;
 }
 bool T1000SensorManager::setSettingValue(const char* name, const char* value) {
   if (strcmp(name, "gps") == 0) {
-    if (strcmp(value, "0") == 0) {
+    if (!getBoolValue(value)) {
       sleep_gps(); // sleep for faster fix !
     } else {
       start_gps();
     }
     return true;
+#ifdef PIN_BUZZER
+  } else if (strcmp(name, "buzzer") == 0) {
+    buzzer_active = getBoolValue(value);
+    return true;
+#endif
   }
   return false;  // not supported
 }

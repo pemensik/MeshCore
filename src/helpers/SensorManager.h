@@ -22,6 +22,9 @@ public:
   virtual const char* getSettingName(int i) const { return NULL; }
   virtual const char* getSettingValue(int i) const { return NULL; }
   virtual bool setSettingValue(const char* name, const char* value) { return false; }
+  virtual bool setSettingValue(const char* name, bool value) {
+    return setSettingValue(name, value ? "1" : "0");
+  }
   virtual LocationProvider* getLocationProvider() { return NULL; }
 
   // Helper functions to manage setting by keys (useful in many places ...)
@@ -33,5 +36,13 @@ public:
       }
     }
     return NULL;
+  }
+
+  bool getBoolValue(const char *value) {
+    return (value != NULL && strcmp(value, "0") != 0);
+  }
+  bool getBoolSettingByKey(const char* key) {
+      const char *value = getSettingByKey(key);
+      return getBoolValue(value);
   }
 };

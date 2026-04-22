@@ -19,7 +19,9 @@ enum class UIEventType {
     channelMessage,
     roomMessage,
     newContactMessage,
-    ack
+    ack,
+    buzzerOff,
+    buzzerOn
 };
 
 class AbstractUITask {
